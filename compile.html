@@ -1,0 +1,98 @@
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:400,700" rel="stylesheet">
+    <link href='style.css' rel='stylesheet' type='text/css'>
+    <title>Toki Ma Political Compass</title>
+    <link rel="icon" type="x-icon" href="icon.png">
+    <link rel="shortcut icon" type="x-icon" href="icon.png">
+    <meta charset="utf-8">
+    </head>
+    
+    <body>
+    <h1>Toki Ma Political Compass</h1>
+    <hr>
+    
+    <h1>Results</h1>
+    
+    <canvas id="maincanvas"></canvas><img src="compass.png" id="background" hidden="true"></img></br>
+    <button class = "button" 
+    onclick="window.location.href=document.getElementById('maincanvas').toDataURL('image/png');">
+        awen e sitelen</button> <br>
+
+    <button class="button" onclick="location.href='index.html';" style="background-color: #2196f3;">monsi</button> <br>
+	
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        x_axis  = parseFloat(urlParams.get("wapolan"))
+        y_axis  = parseFloat(urlParams.get("ulokan"))
+        z_axis  = parseFloat(urlParams.get("ante"))
+        window.onload = function() {
+            var background = document.getElementById("background");
+            var c = document.getElementById("maincanvas");
+            c.width = 1850;
+            c.height = 1600;
+            var ctx = c.getContext("2d");
+
+            ctx.fillStyle = "#EEEEEE"
+            ctx.fillRect(0, 0, 1850, 1600);
+            ctx.drawImage(background, 0, 0);
+
+            let vals = {
+                Sewi: [-0.5,5,8],
+                Pake: [7.5,0.5,-5.5],
+                Kilimute: [-2.5,-4,5],
+                Tenten: [0.5,0,0.5],
+                Tasowe: [-3.5,-1.5,9],
+                Winsen: [3,4.5,0.5],
+                Alonola: [4.5,-0.5,2.5],
+                Sepeku: [-2,3,4],
+                Nupese: [1.5,2.5,-0.5]
+            }
+
+
+            function dot (x_axis, y_axis, z_axis,label) {
+                var dot = c.getContext("2d");
+                dot.beginPath();
+                dot.arc(200 + (1000 * (x_axis+10)/20), 1150 - (1000 * (y_axis + 10)/20), 25, 0, 2 * Math.PI);
+                dot.fillStyle = 'red';
+                dot.fill();
+                dot.stroke();
+
+                var line = c.getContext("2d");
+                line.beginPath();
+                line.moveTo(1500, 1145 - (1000 * (z_axis + 10)/20));
+                line.lineTo(1650, 1145 - (1000 * (z_axis + 10)/20));
+                line.lineWidth = 10;
+                line.strokeStyle = "red";
+                line.stroke();
+
+                ctx.font="30px Montserrat"
+                ctx.textAlign="left"
+                ctx.fillStyle="#222222"
+
+                ctx.fillText(label,200 + (1000 * (x_axis+10)/20), 1150 - (1000 * (y_axis + 10)/20) + 10)
+                ctx.fillText(label,1700, 1145 - (1000 * (z_axis + 10)/20))
+            }
+
+            var avg = [0,0,0]; var num = 0;
+            for (const [key, value] of Object.entries(vals)) {
+                dot(value[0],value[1],value[2],key);
+                for (var i = 0; i < avg.length; i++) avg[i] += value[i];
+                num ++;
+            }
+            for (var i = 0; i < avg.length; i++) avg[i] /= num;
+            dot(avg[0],avg[1],avg[2],"matija")
+
+            ctx.font="50px Montserrat"
+            ctx.textAlign="center"
+            ctx.fillStyle="#222222"
+            ctx.fillText("nasa / wapolan axis (x): " + avg[0].toFixed(2), 725, 1375)
+            ctx.fillText("nalama / ulokan axis (y): " + avg[1].toFixed(2), 725, 1450)
+            ctx.fillText("nasin awen / ante axis (z): " + avg[2].toFixed(2), 725, 1525)
+            ctx.textAlign="right"
+            ctx.font="60px Montserrat"
+            ctx.fillText("Brought to you by 🟤🚧", 1820, 1560)
+        }
+        </script>
+    </body>
+    
